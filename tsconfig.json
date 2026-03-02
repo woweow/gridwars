@@ -4,7 +4,7 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleDetection": "force",
-		"jsx": "preserve",
+		"jsx": "react-jsx",
 		"allowJs": true,
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
@@ -22,11 +22,21 @@
 		"isolatedModules": true,
 		"incremental": true,
 		"resolveJsonModule": true,
-		"plugins": [{ "name": "next" }],
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
 			"@/*": ["./*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-	"exclude": ["node_modules", "convex/_generated"]
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		".next/dev/types/**/*.ts"
+	],
+	"exclude": ["node_modules", "convex/_generated", "ralph.ts"]
 }

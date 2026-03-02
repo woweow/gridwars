@@ -8,7 +8,7 @@ export function getRandomColor(): TeamColor {
 export function checkWinner(cells: CellColor[]): TeamColor | null {
 	if (cells.length === 0) return null;
 	const first = cells[0];
-	if (first === null) return null;
+	if (first === null || first === undefined) return null;
 	for (const cell of cells) {
 		if (cell !== first) return null;
 	}
