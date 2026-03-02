@@ -1,1 +1,448 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+	--font-display: 'Black Ops One', cursive;
+	--font-tactical: 'Rajdhani', sans-serif;
+	--font-hud: 'Orbitron', monospace;
+	--font-mono: 'Share Tech Mono', monospace;
+
+	--color-war-bg: #040804;
+	--color-war-panel: #0a170a;
+	--color-war-panel-alt: #0d1f0d;
+	--color-war-border: #1a3a1a;
+	--color-war-border-bright: #2d6b2d;
+
+	--color-war-green: #39ff14;
+	--color-war-green-dim: #1e6b1e;
+	--color-war-green-mid: #5aaf3a;
+
+	--color-war-amber: #ffb300;
+	--color-war-amber-dim: #7a5200;
+
+	--color-war-red: #cc1111;
+	--color-war-red-bright: #ff2200;
+	--color-war-red-dim: #4a0a0a;
+
+	--color-war-blue: #0055bb;
+	--color-war-blue-bright: #0099ff;
+	--color-war-blue-dim: #0a0a4a;
+
+	--color-war-text: #7ab87a;
+	--color-war-text-bright: #a8d4a8;
+	--color-war-dim: #3a5a3a;
+	--color-war-danger: #ff2200;
+}
+
+/* ── Keyframe Animations ─────────────────────────────────── */
+
+@keyframes scanlines {
+	0%   { background-position: 0 0; }
+	100% { background-position: 0 4px; }
+}
+
+@keyframes flicker {
+	0%, 100% { opacity: 1; }
+	48%       { opacity: 1; }
+	50%       { opacity: 0.94; }
+	52%       { opacity: 1; }
+	88%       { opacity: 1; }
+	90%       { opacity: 0.97; }
+	92%       { opacity: 1; }
+}
+
+@keyframes blink {
+	0%, 49%   { opacity: 1; }
+	50%, 100% { opacity: 0; }
+}
+
+@keyframes glow-red {
+	0%, 100% { box-shadow: 0 0 6px rgba(204,17,17,0.6), 0 0 20px rgba(204,17,17,0.3), inset 0 0 12px rgba(204,17,17,0.15); }
+	50%       { box-shadow: 0 0 12px rgba(255,34,0,0.9), 0 0 35px rgba(204,17,17,0.5), inset 0 0 20px rgba(204,17,17,0.25); }
+}
+
+@keyframes glow-blue {
+	0%, 100% { box-shadow: 0 0 6px rgba(0,85,187,0.6), 0 0 20px rgba(0,85,187,0.3), inset 0 0 12px rgba(0,85,187,0.15); }
+	50%       { box-shadow: 0 0 12px rgba(0,153,255,0.9), 0 0 35px rgba(0,85,187,0.5), inset 0 0 20px rgba(0,85,187,0.25); }
+}
+
+@keyframes claim-burst {
+	0%   { transform: scale(1); }
+	20%  { transform: scale(1.18); }
+	40%  { transform: scale(0.93); }
+	60%  { transform: scale(1.07); }
+	80%  { transform: scale(0.98); }
+	100% { transform: scale(1); }
+}
+
+@keyframes crosshair-in {
+	0%   { opacity: 0; transform: scale(1.5); }
+	100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes march-stripes {
+	0%   { background-position: 0 0; }
+	100% { background-position: 28px 0; }
+}
+
+@keyframes radar-sweep {
+	0%   { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes slide-in {
+	0%   { transform: translateY(-8px); opacity: 0; }
+	100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes score-pulse {
+	0%, 100% { text-shadow: 0 0 8px currentColor; }
+	50%       { text-shadow: 0 0 20px currentColor, 0 0 35px currentColor; }
+}
+
+/* ── Base Styles ─────────────────────────────────────────── */
+
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+html {
+	background-color: var(--color-war-bg);
+}
+
+body {
+	background-color: var(--color-war-bg);
+	color: var(--color-war-text);
+	font-family: var(--font-tactical);
+	min-height: 100vh;
+	position: relative;
+	overflow-x: hidden;
+	animation: flicker 8s ease-in-out infinite;
+}
+
+/* Scanline overlay */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 9998;
+	background: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 2px,
+		rgba(0, 0, 0, 0.07) 2px,
+		rgba(0, 0, 0, 0.07) 4px
+	);
+	animation: scanlines 0.08s linear infinite;
+}
+
+/* Vignette overlay */
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 9997;
+	background: radial-gradient(
+		ellipse at center,
+		transparent 50%,
+		rgba(0, 0, 0, 0.6) 100%
+	);
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+
+.font-display { font-family: var(--font-display); }
+.font-tactical { font-family: var(--font-tactical); }
+.font-hud { font-family: var(--font-hud); }
+.font-mono { font-family: var(--font-mono); }
+
+/* ── War Panel ───────────────────────────────────────────── */
+
+.war-panel {
+	background: var(--color-war-panel);
+	border: 1px solid var(--color-war-border);
+	position: relative;
+}
+
+.war-panel::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		135deg,
+		rgba(57, 255, 20, 0.03) 0%,
+		transparent 50%,
+		rgba(57, 255, 20, 0.02) 100%
+	);
+	pointer-events: none;
+}
+
+.war-panel-corner::before,
+.war-panel-corner::after {
+	content: '';
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	border-color: var(--color-war-green-mid);
+	border-style: solid;
+}
+
+/* ── Status Indicator ────────────────────────────────────── */
+
+.status-blink {
+	animation: blink 1s step-end infinite;
+}
+
+.status-active {
+	color: var(--color-war-green);
+	text-shadow: 0 0 8px var(--color-war-green), 0 0 16px rgba(57,255,20,0.4);
+}
+
+/* ── Battle Squares ──────────────────────────────────────── */
+
+.battle-square {
+	position: relative;
+	background: var(--color-war-panel);
+	border: 1px solid var(--color-war-border);
+	cursor: crosshair;
+	transition: border-color 0.15s, transform 0.1s;
+	overflow: hidden;
+}
+
+/* Empty square: subtle camo pattern */
+.battle-square.empty {
+	background: linear-gradient(
+		145deg,
+		#0a170a 0%,
+		#091508 40%,
+		#0c1a0c 70%,
+		#0a170a 100%
+	);
+}
+
+/* Crosshair lines (horizontal) */
+.battle-square.empty::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 8px;
+	right: 8px;
+	height: 1px;
+	background: var(--color-war-dim);
+	transform: scaleX(0);
+	transition: transform 0.2s ease;
+	opacity: 0.6;
+}
+
+/* Crosshair lines (vertical) */
+.battle-square.empty::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	top: 8px;
+	bottom: 8px;
+	width: 1px;
+	background: var(--color-war-dim);
+	transform: scaleY(0);
+	transition: transform 0.2s ease;
+	opacity: 0.6;
+}
+
+.battle-square.empty:hover::before {
+	transform: scaleX(1);
+}
+.battle-square.empty:hover::after {
+	transform: scaleY(1);
+}
+
+.battle-square.empty:hover {
+	border-color: var(--color-war-green-dim);
+	background: linear-gradient(
+		145deg,
+		#0e200e 0%,
+		#0b1c0b 40%,
+		#101f10 70%,
+		#0e200e 100%
+	);
+}
+
+/* Red territory */
+.battle-square.red {
+	background: linear-gradient(
+		145deg,
+		#2a0808 0%,
+		#1f0505 40%,
+		#2e0a0a 70%,
+		#200606 100%
+	);
+	border-color: var(--color-war-red);
+	animation: glow-red 2.5s ease-in-out infinite;
+}
+
+.battle-square.red::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(
+		ellipse at center,
+		rgba(204,17,17,0.3) 0%,
+		transparent 70%
+	);
+	pointer-events: none;
+}
+
+.battle-square.red:hover {
+	animation: glow-red 1s ease-in-out infinite;
+	filter: brightness(1.2);
+}
+
+/* Blue territory */
+.battle-square.blue {
+	background: linear-gradient(
+		145deg,
+		#080822 0%,
+		#05051a 40%,
+		#0a0a28 70%,
+		#060618 100%
+	);
+	border-color: var(--color-war-blue);
+	animation: glow-blue 2.5s ease-in-out infinite;
+}
+
+.battle-square.blue::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(
+		ellipse at center,
+		rgba(0,85,187,0.3) 0%,
+		transparent 70%
+	);
+	pointer-events: none;
+}
+
+.battle-square.blue:hover {
+	animation: glow-blue 1s ease-in-out infinite;
+	filter: brightness(1.2);
+}
+
+/* Click burst effect */
+.battle-square:active {
+	transform: scale(0.92);
+}
+
+/* ── Score Glow ───────────────────────────────────────────── */
+
+.score-red {
+	color: var(--color-war-red-bright);
+	text-shadow: 0 0 8px var(--color-war-red), 0 0 20px rgba(204,17,17,0.4);
+	animation: score-pulse 3s ease-in-out infinite;
+}
+
+.score-blue {
+	color: var(--color-war-blue-bright);
+	text-shadow: 0 0 8px var(--color-war-blue), 0 0 20px rgba(0,85,187,0.4);
+	animation: score-pulse 3s ease-in-out infinite;
+	animation-delay: 1.5s;
+}
+
+/* ── Tactical Grid Coordinates ───────────────────────────── */
+
+.coord-label {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	color: var(--color-war-dim);
+	letter-spacing: 0.05em;
+	user-select: none;
+}
+
+/* ── Corner Brackets ─────────────────────────────────────── */
+
+.bracket-tl::before { content: ''; position: absolute; top: 0; left: 0; width: 16px; height: 16px; border-top: 2px solid var(--color-war-green-mid); border-left: 2px solid var(--color-war-green-mid); }
+.bracket-tr::before { content: ''; position: absolute; top: 0; right: 0; width: 16px; height: 16px; border-top: 2px solid var(--color-war-green-mid); border-right: 2px solid var(--color-war-green-mid); }
+.bracket-bl::before { content: ''; position: absolute; bottom: 0; left: 0; width: 16px; height: 16px; border-bottom: 2px solid var(--color-war-green-mid); border-left: 2px solid var(--color-war-green-mid); }
+.bracket-br::before { content: ''; position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; border-bottom: 2px solid var(--color-war-green-mid); border-right: 2px solid var(--color-war-green-mid); }
+
+/* ── Warning Stripe ──────────────────────────────────────── */
+
+.warning-stripe {
+	background: repeating-linear-gradient(
+		45deg,
+		rgba(255,179,0,0.08) 0px,
+		rgba(255,179,0,0.08) 10px,
+		transparent 10px,
+		transparent 20px
+	);
+}
+
+/* ── March Bar ───────────────────────────────────────────── */
+
+.march-bar {
+	height: 2px;
+	background: repeating-linear-gradient(
+		90deg,
+		var(--color-war-green) 0px,
+		var(--color-war-green) 8px,
+		transparent 8px,
+		transparent 14px
+	);
+	animation: march-stripes 0.8s linear infinite;
+}
+
+/* ── Faction Toggle ──────────────────────────────────────── */
+
+.faction-btn {
+	font-family: var(--font-display);
+	letter-spacing: 0.1em;
+	padding: 8px 18px;
+	border: 1px solid;
+	cursor: pointer;
+	transition: all 0.2s;
+	position: relative;
+	overflow: hidden;
+}
+
+.faction-btn::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+.faction-btn:hover::before {
+	opacity: 1;
+}
+
+.faction-red {
+	color: var(--color-war-red-bright);
+	border-color: var(--color-war-red);
+	background: rgba(204,17,17,0.08);
+}
+
+.faction-red.active {
+	background: rgba(204,17,17,0.2);
+	box-shadow: 0 0 12px rgba(204,17,17,0.4), inset 0 0 12px rgba(204,17,17,0.1);
+	border-color: var(--color-war-red-bright);
+}
+
+.faction-blue {
+	color: var(--color-war-blue-bright);
+	border-color: var(--color-war-blue);
+	background: rgba(0,85,187,0.08);
+}
+
+.faction-blue.active {
+	background: rgba(0,85,187,0.2);
+	box-shadow: 0 0 12px rgba(0,85,187,0.4), inset 0 0 12px rgba(0,85,187,0.1);
+	border-color: var(--color-war-blue-bright);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-war-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-war-border-bright); }

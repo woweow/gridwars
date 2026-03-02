@@ -1,6 +1,5 @@
 "use client";
 
-import * as Switch from "@radix-ui/react-switch";
 import { trackColorSwitched } from "@/lib/analytics";
 import type { TeamColor } from "@/lib/game";
 
@@ -10,31 +9,128 @@ type ColorToggleProps = {
 };
 
 export function ColorToggle({ color, onColorChange }: ColorToggleProps) {
-	const isBlue = color === "blue";
+	const handleChange = (next: TeamColor) => {
+		if (next !== color) {
+			trackColorSwitched(color, next);
+			onColorChange(next);
+		}
+	};
 
 	return (
-		<div className="flex items-center gap-3">
-			<span className={`font-bold text-lg ${color === "red" ? "text-red-500" : "text-gray-400"}`}>
-				Red
-			</span>
-			<Switch.Root
-				checked={isBlue}
-				onCheckedChange={(checked) => {
-					const newColor: TeamColor = checked ? "blue" : "red";
-					trackColorSwitched(color, newColor);
-					onColorChange(newColor);
+		<div
+			style={{
+				display: "flex",
+				alignItems: "stretch",
+				gap: "0",
+				border: "1px solid var(--color-war-border)",
+				overflow: "hidden",
+				position: "relative",
+			}}
+		>
+			{/* RED faction button */}
+			<button
+				type="button"
+				onClick={() => handleChange("red")}
+				aria-pressed={color === "red"}
+				aria-label="Join Crimson Force"
+				style={{
+					fontFamily: "var(--font-display)",
+					fontSize: "1rem",
+					letterSpacing: "0.12em",
+					padding: "10px 22px",
+					cursor: "pointer",
+					border: "none",
+					borderRight: "1px solid var(--color-war-border)",
+					transition: "all 0.2s",
+					position: "relative",
+					color: color === "red" ? "var(--color-war-red-bright)" : "var(--color-war-dim)",
+					background:
+						color === "red"
+							? "linear-gradient(135deg, rgba(204,17,17,0.2) 0%, rgba(204,17,17,0.08) 100%)"
+							: "var(--color-war-panel)",
+					boxShadow:
+						color === "red"
+							? "0 0 12px rgba(204,17,17,0.3), inset 0 0 12px rgba(204,17,17,0.08)"
+							: "none",
 				}}
-				className="w-12 h-7 bg-gray-700 rounded-full relative cursor-pointer transition-colors data-[state=checked]:bg-gray-700"
 			>
-				<Switch.Thumb
-					className={`block w-5 h-5 rounded-full transition-transform translate-x-1 data-[state=checked]:translate-x-6 ${
-						isBlue ? "bg-blue-500" : "bg-red-500"
-					}`}
-				/>
-			</Switch.Root>
-			<span className={`font-bold text-lg ${color === "blue" ? "text-blue-500" : "text-gray-400"}`}>
-				Blue
-			</span>
+				{color === "red" && (
+					<span
+						style={{
+							position: "absolute",
+							top: "4px",
+							right: "6px",
+							fontSize: "6px",
+							color: "var(--color-war-red)",
+						}}
+						className="status-blink"
+					>
+						●
+					</span>
+				)}
+				CRIMSON
+			</button>
+
+			{/* Center separator */}
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					padding: "0 10px",
+					background: "var(--color-war-panel-alt)",
+					fontFamily: "var(--font-mono)",
+					fontSize: "9px",
+					color: "var(--color-war-amber)",
+					letterSpacing: "0.1em",
+					borderRight: "1px solid var(--color-war-border)",
+					userSelect: "none",
+				}}
+			>
+				OR
+			</div>
+
+			{/* BLUE faction button */}
+			<button
+				type="button"
+				onClick={() => handleChange("blue")}
+				aria-pressed={color === "blue"}
+				aria-label="Join Cobalt Force"
+				style={{
+					fontFamily: "var(--font-display)",
+					fontSize: "1rem",
+					letterSpacing: "0.12em",
+					padding: "10px 22px",
+					cursor: "pointer",
+					border: "none",
+					transition: "all 0.2s",
+					position: "relative",
+					color: color === "blue" ? "var(--color-war-blue-bright)" : "var(--color-war-dim)",
+					background:
+						color === "blue"
+							? "linear-gradient(135deg, rgba(0,85,187,0.2) 0%, rgba(0,85,187,0.08) 100%)"
+							: "var(--color-war-panel)",
+					boxShadow:
+						color === "blue"
+							? "0 0 12px rgba(0,85,187,0.3), inset 0 0 12px rgba(0,85,187,0.08)"
+							: "none",
+				}}
+			>
+				{color === "blue" && (
+					<span
+						style={{
+							position: "absolute",
+							top: "4px",
+							right: "6px",
+							fontSize: "6px",
+							color: "var(--color-war-blue-bright)",
+						}}
+						className="status-blink"
+					>
+						●
+					</span>
+				)}
+				COBALT
+			</button>
 		</div>
 	);
 }
