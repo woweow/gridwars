@@ -1,0 +1,46 @@
+# dependencies
+node_modules
+
+# next.js
+.next/
+out/
+
+# convex
+convex/_generated/
+
+# output
+dist
+*.tgz
+
+# coverage
+coverage
+*.lcov
+
+# logs
+logs
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# env files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.cache
+*.tsbuildinfo
+
+# sentry
+.sentryclirc
+
+# IDEs
+.idea
+.vscode
+
+# OS
+.DS_Store
+
+# bun
+bun.lock
