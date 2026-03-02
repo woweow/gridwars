@@ -133,9 +133,9 @@ async function run(options: RunOptions) {
 	while (!output.includes(STOP_TOKEN) && iteration <= options.maxIterations) {
 		const isContinuation = iteration !== 1;
 		const shouldResume = iteration === 1 ? options.resumeFirst : true;
-		const iterationPrompt =
-			shouldResume && options.resumePrompt ? options.resumePrompt : prompt;
-		if (shouldResume && options.resumePrompt) {
+		const shouldUseResumePrompt = iteration === 1 && shouldResume && options.resumePrompt;
+		const iterationPrompt = shouldUseResumePrompt ? options.resumePrompt : prompt;
+		if (shouldUseResumePrompt) {
 			console.log(
 				`[turn_prompt_override] iteration=${iteration} chars=${options.resumePrompt.length}`,
 			);
