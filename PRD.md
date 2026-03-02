@@ -119,6 +119,8 @@ The app is a single Next.js application. Convex runs as a separate hosted servic
 
 ### Component Descriptions
 
+When working with the UI, you MUST use the frontend-design skill before working
+
 **Color Toggle**
 - Rendered using Radix UI Switch
 - On page load, randomly assigns the user Red or Blue (in-memory, not persisted)
