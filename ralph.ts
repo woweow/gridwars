@@ -54,6 +54,7 @@ type RunOptions = {
 	model: string;
 	cli: CliTool;
 	resumeFirst: boolean;
+	resumePrompt?: string;
 };
 
 const parseBooleanFlag = (value: string | undefined, fallback: boolean) => {
@@ -73,6 +74,7 @@ const parseArgs = (argv: string[]) => {
 	let model = DEFAULT_MODEL;
 	let cli: CliTool = DEFAULT_CLI;
 	let resumeFirst = DEFAULT_RESUME_FIRST;
+	let resumePrompt: string | undefined;
 
 	for (let i = 0; i < argv.length; i += 1) {
 		const arg = argv[i];
@@ -92,16 +94,22 @@ const parseArgs = (argv: string[]) => {
 		if (arg === "--resume-first") {
 			resumeFirst = true;
 		}
+		if (arg === "--resume-prompt" && argv[i + 1]) {
+			resumePrompt = argv[i + 1];
+			i += 1;
+			continue;
+		}
 	}
 
 	resumeFirst = parseBooleanFlag(process.env.RALPH_RESUME_FIRST, resumeFirst);
+	resumePrompt = process.env.RALPH_RESUME_PROMPT ?? resumePrompt;
 	model = process.env.RALPH_MODEL ?? model;
 	const envCli = process.env.RALPH_CLI;
 	if (envCli === "claude" || envCli === "codex") {
 		cli = envCli;
 	}
 
-	return { model, cli, resumeFirst };
+	return { model, cli, resumeFirst, resumePrompt };
 };
 
 const buildCommand = (cli: CliTool, model: string, prompt: string, shouldResume: boolean) => {
@@ -125,11 +133,23 @@ async function run(options: RunOptions) {
 	while (!output.includes(STOP_TOKEN) && iteration <= options.maxIterations) {
 		const isContinuation = iteration !== 1;
 		const shouldResume = iteration === 1 ? options.resumeFirst : true;
+		const iterationPrompt =
+			shouldResume && options.resumePrompt ? options.resumePrompt : prompt;
+		if (shouldResume && options.resumePrompt) {
+			console.log(
+				`[turn_prompt_override] iteration=${iteration} chars=${options.resumePrompt.length}`,
+			);
+		}
 		console.log(
 			`[turn_start] iteration=${iteration} cli=${options.cli} model=${options.model} continuation=${isContinuation} resume=${shouldResume}`,
 		);
 
-		const command = buildCommand(options.cli, options.model, prompt, shouldResume);
+		const command = buildCommand(
+			options.cli,
+			options.model,
+			iterationPrompt,
+			shouldResume,
+		);
 
 		output = await command.text();
 		console.log(
@@ -150,6 +170,6 @@ async function run(options: RunOptions) {
 }
 
 const maxIterations = parseMaxIterations(process.env.RALPH_MAX_ITERATIONS);
-const { model, cli, resumeFirst } = parseArgs(process.argv.slice(2));
+const { model, cli, resumeFirst, resumePrompt } = parseArgs(process.argv.slice(2));
 
-await run({ maxIterations, model, cli, resumeFirst });
+await run({ maxIterations, model, cli, resumeFirst, resumePrompt });
