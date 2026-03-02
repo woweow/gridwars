@@ -15,3 +15,11 @@
 - How I verified it: Playwright MCP against localhost:3000 — grid renders 25 grey squares, clicking claims with correct color matching toggle, toggle flip changes claim color, overwriting opponent squares works. Biome check clean, 8/8 vitest tests pass.
 - Notes: The full local game loop works: claim squares, toggle colors, overwrite opponents. Win condition and score increment haven't been tested yet (need to fill all 25 squares). Next priority: deploy to Vercel + Convex production, or test win condition locally first.
 - Blockers: None.
+
+## Entry 3
+
+- Current time (PST): 2026-03-01 ~8:51 PM
+- What I did: Deployed Convex to production (amicable-camel-941), seeded production database, deployed Next.js to Vercel production (https://main-nine-amber.vercel.app). Fixed three build issues: top-level await in next.config.ts broke Vercel build, TypeScript strict mode error in checkWinner with noUncheckedIndexedAccess, and ralph.ts type errors (excluded from tsconfig).
+- How I verified it: Playwright MCP against production URL — grid renders 25 grey squares, score 0/0, toggle visible, clicking a square claims it correctly. Build passes locally with `bun run build`. Biome check clean, 8/8 vitest tests pass.
+- Notes: Production is live and functional. NEXT_PUBLIC_CONVEX_URL env var set in Vercel. Haven't tested win condition yet (fill all 25 squares same color), real-time sync across tabs, or mobile viewport. Those are the next verification items from the Definition of Done.
+- Blockers: None.
