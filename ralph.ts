@@ -97,7 +97,6 @@ const parseArgs = (argv: string[]) => {
 		if (arg === "--resume-prompt" && argv[i + 1]) {
 			resumePrompt = argv[i + 1];
 			i += 1;
-			continue;
 		}
 	}
 
@@ -144,12 +143,7 @@ async function run(options: RunOptions) {
 			`[turn_start] iteration=${iteration} cli=${options.cli} model=${options.model} continuation=${isContinuation} resume=${shouldResume}`,
 		);
 
-		const command = buildCommand(
-			options.cli,
-			options.model,
-			iterationPrompt,
-			shouldResume,
-		);
+		const command = buildCommand(options.cli, options.model, iterationPrompt, shouldResume);
 
 		output = await command.text();
 		console.log(
