@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ColorToggle } from "@/components/ColorToggle";
 import { Grid } from "@/components/Grid";
+import { RatioBar } from "@/components/RatioBar";
 import { Scoreboard } from "@/components/Scoreboard";
 import type { TeamColor } from "@/lib/game";
 import { getRandomColor } from "@/lib/game";
@@ -84,18 +85,19 @@ export default function Home() {
 				<div
 					style={{
 						fontFamily: "var(--font-tactical)",
-						fontSize: "12px",
+						fontSize: "1.6rem",
 						fontWeight: 600,
-						letterSpacing: "0.25em",
-						color: "var(--color-war-dim)",
-						marginBottom: "12px",
+						letterSpacing: "0.05em",
+						color: "var(--color-war-text-bright)",
+						marginBottom: "16px",
+						lineHeight: 1.2,
 					}}
 				>
-					TACTICAL DOMINATION SIMULATOR
+					Help your team dominate the grid!
 				</div>
 
 				{/* March bar */}
-				<div className="march-bar" style={{ width: "100%", marginBottom: "12px" }} />
+				<RatioBar />
 
 				{/* Status row */}
 				<div
