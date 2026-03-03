@@ -14,6 +14,18 @@ export const claimSquare = mutation({
 		color: v.union(v.literal("red"), v.literal("blue")),
 	},
 	handler: async (ctx, { squareIndex, color }) => {
+		const config = await ctx.db.query("gameConfig").first();
+		if (config) {
+			const totalSquares = config.gridSize * config.gridSize;
+			const isInteger = Number.isInteger(squareIndex);
+			const inBounds = squareIndex >= 0 && squareIndex < totalSquares;
+			if (!isInteger || !inBounds) {
+				throw new Error(
+					`squareIndex ${squareIndex} is out of bounds for grid size ${config.gridSize}`,
+				);
+			}
+		}
+
 		const square = await ctx.db
 			.query("grid")
 			.withIndex("by_squareIndex", (q) => q.eq("squareIndex", squareIndex))
@@ -23,7 +35,6 @@ export const claimSquare = mutation({
 
 		await ctx.db.patch(square._id, { color });
 
-		const config = await ctx.db.query("gameConfig").first();
 		if (!config) return;
 
 		const allSquares = await ctx.db.query("grid").collect();
