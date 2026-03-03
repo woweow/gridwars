@@ -48,8 +48,6 @@ The primary purpose of this project is **exploration and learning** — specific
 | Lint / Format | Biome | Replaces ESLint + Prettier |
 | Testing | Vitest | Core functionality only |
 | Backend | Convex | Real-time data sync, mutations, queries |
-| Functional Runtime | Effect | Error handling, typed pipelines |
-| Effect + Convex Bridge | Confect (`@rjdellecese/confect`) | Typed RPC layer over Convex |
 | Frontend Framework | Next.js 16 (App Router) | Single app, no monorepo |
 | UI Library | React 19 | |
 | Styling | Tailwind CSS 4 | |
@@ -511,7 +509,6 @@ bun vitest
 │   ├── grid.ts                 # claimSquare mutation (atomic: win check + score + reset) + getGrid query
 │   └── scores.ts               # getScores query
 ├── lib/
-│   ├── confect.ts              # Confect RPC wrappers around Convex mutations
 │   ├── game.ts                 # Pure game logic (win detection, color assignment)
 │   └── analytics.ts            # PostHog event helpers
 ├── instrumentation.ts          # Sentry initialization (Next.js convention)
