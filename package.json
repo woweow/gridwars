@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build",
+		"build": "npx convex codegen && next build",
 		"start": "next start",
 		"lint": "bunx biome check .",
 		"format": "bunx biome format --write .",
