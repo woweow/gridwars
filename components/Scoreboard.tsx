@@ -1,10 +1,45 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useEffect, useRef } from "react";
 import { api } from "@/convex/_generated/api";
+import { trackRoundWon } from "@/lib/analytics";
 
 export function Scoreboard() {
 	const scores = useQuery(api.scores.getScores);
+	const previousScoresRef = useRef<{ red: number; blue: number } | null>(null);
+	const roundStartRef = useRef<number | null>(null);
+
+	useEffect(() => {
+		if (!scores) return;
+
+		const current = { red: scores.red ?? 0, blue: scores.blue ?? 0 };
+
+		if (roundStartRef.current === null) {
+			roundStartRef.current = Date.now();
+		}
+
+		const previous = previousScoresRef.current;
+		if (!previous) {
+			previousScoresRef.current = current;
+			return;
+		}
+
+		const redDelta = current.red - previous.red;
+		const blueDelta = current.blue - previous.blue;
+		const totalDelta = redDelta + blueDelta;
+
+		// A normal completed round increments exactly one team by 1.
+		if (totalDelta === 1) {
+			const winner = redDelta === 1 ? "red" : "blue";
+			const durationMs = Date.now() - (roundStartRef.current ?? Date.now());
+			const roundDuration = Math.max(0, Math.round(durationMs / 1000));
+			trackRoundWon(winner, roundDuration);
+			roundStartRef.current = Date.now();
+		}
+
+		previousScoresRef.current = current;
+	}, [scores]);
 
 	const panelStyle: React.CSSProperties = {
 		background: "var(--color-war-panel)",
